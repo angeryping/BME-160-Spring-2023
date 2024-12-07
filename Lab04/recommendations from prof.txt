@@ -1,0 +1,26 @@
+many short sequences, is a gene sequence starts in frame 1
+
+
+for codon, aa in sorted(rnaCodonTable.items(), key=lambda item: (item[1], item[0]))
+
+#build a key and sort based on list of tuples
+
+relCodonUsage = codonComp[codon]/aaComp[aa]
+
+
+def sortAACodon(item):
+	return(item[1],item[0])
+for codon, aa in sorted(rnaCodonTable.items(), key = sortAACodon)
+
+
+for codons in sorted(codonCount, key=lambda c: nucParams.rnaCodonTable[c]):
+            c_count = codonCount[codons]
+            totalAAs += c_count
+            one_letter = nucParams.rnaCodonTable[codons]
+            aminoCount = nucParams.aaComp[one_letter]
+        #calculates percentage
+            if c_count != 0:
+                finalPercentage = (c_count/aminoCount) *100
+            else:
+                finalPercentage = (c_count/1) *100
+        print(f'{codons} : {one_letter} {finalPercentage:5.1f}% ({c_count:6d})')

@@ -1,0 +1,16 @@
+>CV into cmd to run<
+
+initialize cmd >>>>>
+cd My Drive\1. classes\BME 160 - Research Programming Life Sciences\jupyter\Lab05
+
+cd My Drive\1. classes\BME 160 - Research Programming Life Sciences\jupyter\2test05
+
+cd My Drive\1. classes\BME 160 - Research Programming Life Sciences\jupyter\3test05
+
+cd My Drive\1. classes\BME 160 - Research Programming Life Sciences\jupyter\Lab05\Inspection and Submission
+
+
+dont use this>>>>>> Get-Content tass2.fa | python3 findORFs.py -mG 300 -lG
+ use this    >>>>>>
+python findORFs.py < tass2.fa -mG 300 -lG
+python findORFs.py < tass2.fa >tass2ORFdata-ATG-100.txt  -mG 300 -lG -s ATG -s GTG

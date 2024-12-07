@@ -1,0 +1,89 @@
+import sys
+class FastAreader :
+    ''' 
+    Define objects to read FastA files.
+    
+    instantiation: 
+    thisReader = FastAreader ('testTiny.fa')
+    usage:
+    for head, seq in thisReader.readFasta():
+        print (head,seq)
+    '''
+    def __init__ (self, fname=None):
+        '''contructor: saves attribute fname '''
+        self.fname = fname
+            
+    def doOpen (self):
+        ''' Handle file opens, allowing STDIN.'''
+        if self.fname is None:
+            return sys.stdin
+        else:
+            return open(self.fname)
+        
+    def readFasta (self):
+        ''' Read an entire FastA record and return the sequence header/sequence'''
+        header = ''
+        sequence = ''
+        
+        with self.doOpen() as fileH:
+            
+            header = ''
+            sequence = ''
+            
+            # skip to first fasta header
+            line = fileH.readline()
+            while not line.startswith('>') :
+                line = fileH.readline()
+            header = line[1:].rstrip()
+
+            for line in fileH:
+                if line.startswith ('>'):
+                    yield header,sequence
+                    header = line[1:].rstrip()
+                    sequence = ''
+                else :
+                    sequence += ''.join(line.rstrip().split()).upper()
+
+        yield header,sequence
+        
+class OrfFinder:
+    """
+    Takes in a sequence of a FASTA file and stores ORFs in a lists of lists.
+    Attributes:
+        attr1 (list): List of valid stop codons.
+        attr2 (list): List of valid start codon.
+        attr3 (dict): Dictionary of valid nucleotides.
+    """
+    stop_codons = ['TGA', 'TAG', 'TAA']
+    start_codons = ['ATG']
+    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
+
+    def __init__(self, seq):
+        """Sets up list containing many lists of oRFs found in the fasta sequence.
+        Contains the frame, start, stop, length of the ORF.
+        Args:
+            param1 (str): String of DNA from FASTA file.
+        """
+        self.seq = seq
+        self.orfs = []
+        for frame in range(3):
+            self.findOrfs(frame)
+
+    def findOrfs(self, frame):
+        """
+        Find Orfs on 3'-5' strand and return list of Orfs.
+        """
+        start_positions = [i for i in range(len(self.seq)) if self.seq[i] == 'ATG']
+        for start in start_positions:
+            orf = self.getOrf(start, frame)
+            if orf:
+                self.orfs.append(orf)
+
+    def getOrf(self, start, frame):
+        """
+        Return ORF starting at `start` and ending at the next stop codon.
+        """
+        end = start + 3 * frame
+        while end < len(self.seq) and self.seq[end:end + 3] not in self.stop_codons:
+            end += 3
+        return self.seq[start:end]
